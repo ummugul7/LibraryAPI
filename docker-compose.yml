@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:latest
+    container_name: database
+    ports:
+      - "5433:5432"  # port çalışması olduğu için portlrı değiştiridm
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'admin123'
+      POSTGRES_DB: 'library_db'
+    volumes:
+      - postgres:/var/lib/postgresql # psotgrede containerinde bulunan verileri benim postgres dosyama ekleyeck
+      # mevcut sürümde +18 de yani data yok bunu ekleme yoksa hata alıyorsun
+    networks:
+      - lib-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'  #pg admin araryüzüne girerekn kullanılacak
+      PGADMIN_DEFAULT_PASSWORD: 'admin123'
+    ports:
+      - "15432:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    networks:
+      - lib-network
+
+volumes:
+  postgres:
+  pgadmin:
+
+networks:
+  lib-network:
+    driver: bridge
