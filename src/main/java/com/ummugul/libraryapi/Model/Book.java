@@ -1,9 +1,7 @@
 package com.ummugul.libraryapi.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -22,9 +20,6 @@ public class Book {
     @NotBlank(message = "Book name cannot be empty")
     private String name;
 
-    @NotBlank(message = "Author name cannot be empty")
-    private String author;
-
     @Positive(message = "Page number must be positive.")
     private int page;
 
@@ -33,4 +28,8 @@ public class Book {
     @Positive(message = "price number must be positive.")
     private  int price;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    @JsonBackReference
+    private Author author;
 }

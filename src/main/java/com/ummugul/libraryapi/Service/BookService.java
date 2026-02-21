@@ -1,6 +1,9 @@
 package com.ummugul.libraryapi.Service;
 
+import com.ummugul.libraryapi.DTO.BookRequestDTO;
+import com.ummugul.libraryapi.Model.Author;
 import com.ummugul.libraryapi.Model.Book;
+import com.ummugul.libraryapi.Repository.IAuthorRepository;
 import com.ummugul.libraryapi.Repository.IBookRepository;
 import jakarta.persistence.Access;
 import jakarta.validation.Valid;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,15 +22,28 @@ import java.util.Optional;
 public class BookService {
 
     private final IBookRepository IBookRepository;
+    private final IAuthorRepository IAuthorRepository;
 
-    public String AddBook( Book book){
+
+    public String AddBook(BookRequestDTO dto){
+        Author author = IAuthorRepository
+                .findByFirstnameIgnoreCaseAndLastnameIgnoreCase(dto.getFirstname(), dto.getLastname())
+                .orElseGet(() -> {
+                    Author newAuthor = new Author();
+                    newAuthor.setFirstname(dto.getFirstname());
+                    newAuthor.setLastname(dto.getLastname());
+                    return IAuthorRepository.save(newAuthor);
+                });
+
         // kitap kaydı var mı diye bakıyoruz
-        Optional<Book> existingBook = IBookRepository.findByNameIgnoreCase(book.getName());
-        if(!existingBook.isPresent()){ // mevcut değilse
-            IBookRepository.save(book);
-            return "registration done";
-        }
-        else return "book already existing " ;
+        if (IBookRepository.findByNameIgnoreCase(dto.getName()).isPresent())
+            return "Book already exists";
+
+        Book book = new Book();
+        BeanUtils.copyProperties(dto, book, "firstname", "lastname");
+        book.setAuthor(author);
+        IBookRepository.save(book);
+        return "Registration done";
     }
 
     public Book GetBook(String name) {
@@ -54,6 +71,26 @@ public class BookService {
         BeanUtils.copyProperties(book, existingBook, "id"); // id hariç kopyala
         IBookRepository.save(existingBook);
           return book;
+    }
+
+    public List<Book> ListBook() {
+      List<Book> bookList=IBookRepository.findAll();
+      if (bookList.isEmpty())
+          throw new RuntimeException("No books found");
+        else return  bookList;
+    }
+
+    public List<Book> BestBook() {
+        List<Book> allBooks = IBookRepository.findAllByOrderByScoreDesc();
+
+        if (allBooks.isEmpty()) throw new RuntimeException("book not found");
+
+        int topScore = allBooks.get(0).getScore();
+        return allBooks.stream()
+                .filter(book -> book.getScore() == topScore)
+                .toList();
+
+
     }
 
 }

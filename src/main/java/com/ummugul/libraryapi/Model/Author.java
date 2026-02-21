@@ -1,5 +1,6 @@
 package com.ummugul.libraryapi.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,8 @@ public class Author {
     @NotBlank(message = "lastname  cannot be empty")
     private String lastname;
 
-    @OneToMany
+    @OneToMany(mappedBy = "author")
+    @JsonManagedReference
     private List<Book> books;
 
 }
