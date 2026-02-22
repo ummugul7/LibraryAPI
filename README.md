@@ -1,6 +1,6 @@
 # Library API
 
-Spring Boot ile geliştirilmiş basit bir kütüphane yönetim REST API'si. Yazarlar ve kitaplar üzerinde CRUD işlemleri, arama ve filtreleme sunar.
+Spring Boot ile geliştirilmiş kütüphane yönetim REST API'si. Yazarlar ve kitaplar üzerinde CRUD , arama ve filtreleme işlemleri .
 
 ## Tech Stack
 
