@@ -78,7 +78,3 @@ src/main/java/com/ummugul/libraryapi/
 - **Database:** library_db
 - **User:** admin
 - **Password:** admin123
-
-## Lisans
-
-MIT
