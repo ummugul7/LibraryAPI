@@ -1,80 +1,35 @@
 # Library API
 
-Spring Boot ile geliştirilmiş kütüphane yönetim REST API'si. Yazarlar ve kitaplar üzerinde CRUD , arama ve filtreleme işlemleri .
+REST API for library management — CRUD operations for authors and books.
 
 ## Tech Stack
 
-- **Java 21**
-- **Spring Boot 3.4**
-- **Spring Data JPA**
-- **PostgreSQL**
-- **Docker & Docker Compose**
-- **Lombok**
-- **Bean Validation**
+Java 21 · Spring Boot 3.4 · JPA · PostgreSQL · Docker · Lombok
 
-## Gereksinimler
-
-- JDK 21+
-- Maven 3.8+
-- Docker & Docker Compose (veritabanı için)
-
-## Kurulum ve Çalıştırma
-
-### 1. Veritabanını Başlat
+## Setup
 
 ```bash
 docker-compose up -d
-```
-
-Bu komut PostgreSQL ve pgAdmin container'larını başlatır:
-- PostgreSQL: `localhost:5433`
-- pgAdmin: `http://localhost:15432` (admin@admin.com / admin123)
-
-### 2. Uygulamayı Çalıştır
-
-```bash
 ./mvnw spring-boot:run
 ```
 
-Uygulama `http://localhost:8080` adresinde ayağa kalkar.
+Runs at `http://localhost:8080`
 
 ## API Endpoints
 
-### Author
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/author/save` | Add author |
+| GET | `/author/list` | List authors |
+| GET | `/author/detail?firstname=&lastname=` | Author detail with books |
+| DELETE | `/author/delete` | Delete author |
+| POST | `/book/addbook` | Add book |
+| GET | `/book/list` | List books |
+| GET | `/book/search?name=` | Search by name |
+| GET | `/book/best` | Top-rated books |
+| PUT | `/book/update?name=` | Update book |
+| DELETE | `/book/delete?name=` | Delete book |
 
-| Method | Endpoint | Açıklama |
-|--------|----------|----------|
-| POST | `/author/save` | Yeni yazar ekle |
-| GET | `/author/list` | Tüm yazarları listele |
-| GET | `/author/detail?firstname=&lastname=` | Yazar detayı (kitaplarla birlikte) |
-| DELETE | `/author/delete` | Yazar sil (JSON body) |
+## DB
 
-### Book
-
-| Method | Endpoint | Açıklama |
-|--------|----------|----------|
-| POST | `/book/addbook` | Yeni kitap ekle |
-| GET | `/book/list` | Tüm kitapları listele |
-| GET | `/book/search?name=` | İsme göre kitap ara |
-| GET | `/book/best` | En yüksek puanlı kitaplar |
-| PUT | `/book/update?name=` | Kitap güncelle |
-| DELETE | `/book/delete?name=` | Kitap sil |
-
-## Proje Yapısı
-
-```
-src/main/java/com/ummugul/libraryapi/
-├── Controller/     # REST API controller'ları
-├── Model/          # JPA Entity'ler (Author, Book)
-├── Service/        # İş mantığı katmanı
-├── Repository/     # Veri erişim katmanı
-└── dto/            # Data Transfer Objects
-```
-
-## Veritabanı
-
-- **Host:** localhost
-- **Port:** 5433
-- **Database:** library_db
-- **User:** admin
-- **Password:** admin123
+`localhost:5433` · library_db · admin / admin123
