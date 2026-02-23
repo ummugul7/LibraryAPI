@@ -1,8 +1,9 @@
 package com.ummugul.libraryapi.Controller;
 
-import com.ummugul.libraryapi.DTO.BookRequestDTO;
+import com.ummugul.libraryapi.dto.BookRequestDTO;
 import com.ummugul.libraryapi.Model.Book;
 import com.ummugul.libraryapi.Service.BookService;
+import com.ummugul.libraryapi.dto.BookResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class BookController {
 
     // http://localhost:8080/book/search?name=Budala
     @GetMapping ("/search")
-    public  Book GetBook (@RequestParam String name){return bookService.GetBook(name);}
+    public BookResponseDto GetBook (@RequestParam String name){return bookService.GetBook(name);}
 
     @DeleteMapping("/delete")
     public  String DeleteBook (@RequestParam String name) {return bookService.DeleteBook(name);}
@@ -32,12 +33,12 @@ public class BookController {
     }
 
     @GetMapping("/list")
-    public List<Book> ListBook(){
+    public List<BookResponseDto> ListBook(){
         return bookService.ListBook();
     }
 
     @GetMapping("/best")
-    public List<Book> BestBook (){
+    public List<BookResponseDto> BestBook (){
         return bookService.BestBook();
     }
 }

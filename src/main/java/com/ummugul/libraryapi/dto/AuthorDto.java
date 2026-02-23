@@ -1,17 +1,16 @@
-package com.ummugul.libraryapi.DTO;
+package com.ummugul.libraryapi.dto;
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookRequestDTO {
+public class AuthorDto {
+
     private String firstname;
     private String lastname;
-    private String name;
-    private int page;
-    private int score;
-    private int price;
+
 }

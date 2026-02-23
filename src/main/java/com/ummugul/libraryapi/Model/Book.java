@@ -17,19 +17,15 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int  id;
 
-    @NotBlank(message = "Book name cannot be empty")
     private String name;
 
-    @Positive(message = "Page number must be positive.")
     private int page;
 
     private int score;
 
-    @Positive(message = "price number must be positive.")
     private  int price;
 
-    @ManyToOne
+    @ManyToOne // birden fazla kitabın 1 yazarı olabilir
     @JoinColumn(name = "author_id")
-    @JsonBackReference
-    private Author author;
+    private Author author; // book tablomda yazarın idsini tutuyorum
 }

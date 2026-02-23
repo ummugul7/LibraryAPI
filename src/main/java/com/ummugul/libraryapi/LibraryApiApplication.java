@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 //pgadmin için http://localhost:15432
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.ummugul.libraryapi")
 public class LibraryApiApplication {
 
     public static void main(String[] args) {
