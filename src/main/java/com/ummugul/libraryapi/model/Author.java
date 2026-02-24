@@ -1,6 +1,5 @@
-package com.ummugul.libraryapi.Model;
+package com.ummugul.libraryapi.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

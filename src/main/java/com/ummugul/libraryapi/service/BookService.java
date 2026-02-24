@@ -1,11 +1,11 @@
-package com.ummugul.libraryapi.Service;
+package com.ummugul.libraryapi.service;
 
 import com.ummugul.libraryapi.dto.AuthorDto;
 import com.ummugul.libraryapi.dto.BookRequestDTO;
-import com.ummugul.libraryapi.Model.Author;
-import com.ummugul.libraryapi.Model.Book;
-import com.ummugul.libraryapi.Repository.IAuthorRepository;
-import com.ummugul.libraryapi.Repository.IBookRepository;
+import com.ummugul.libraryapi.model.Author;
+import com.ummugul.libraryapi.model.Book;
+import com.ummugul.libraryapi.repository.IAuthorRepository;
+import com.ummugul.libraryapi.repository.IBookRepository;
 import com.ummugul.libraryapi.dto.BookResponseDto;
 import com.ummugul.libraryapi.exception.BookNotFoundException;
 import jakarta.validation.Valid;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

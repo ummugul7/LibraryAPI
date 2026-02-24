@@ -1,7 +1,6 @@
-package com.ummugul.libraryapi.Repository;
+package com.ummugul.libraryapi.repository;
 
-import com.ummugul.libraryapi.Model.Book;
-import jakarta.validation.constraints.NotBlank;
+import com.ummugul.libraryapi.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

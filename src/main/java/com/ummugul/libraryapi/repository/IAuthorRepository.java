@@ -1,7 +1,6 @@
-package com.ummugul.libraryapi.Repository;
+package com.ummugul.libraryapi.repository;
 
-import com.ummugul.libraryapi.Model.Author;
-import com.ummugul.libraryapi.Model.Book;
+import com.ummugul.libraryapi.model.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

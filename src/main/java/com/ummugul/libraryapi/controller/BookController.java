@@ -1,8 +1,8 @@
-package com.ummugul.libraryapi.Controller;
+package com.ummugul.libraryapi.controller;
 
 import com.ummugul.libraryapi.dto.BookRequestDTO;
-import com.ummugul.libraryapi.Model.Book;
-import com.ummugul.libraryapi.Service.BookService;
+import com.ummugul.libraryapi.model.Book;
+import com.ummugul.libraryapi.service.BookService;
 import com.ummugul.libraryapi.dto.BookResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

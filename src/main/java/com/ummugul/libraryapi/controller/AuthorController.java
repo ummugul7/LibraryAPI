@@ -1,7 +1,7 @@
-package com.ummugul.libraryapi.Controller;
+package com.ummugul.libraryapi.controller;
 
-import com.ummugul.libraryapi.Model.Author;
-import com.ummugul.libraryapi.Service.AuthorService;
+import com.ummugul.libraryapi.model.Author;
+import com.ummugul.libraryapi.service.AuthorService;
 import com.ummugul.libraryapi.dto.AuthorDetailDto;
 import com.ummugul.libraryapi.dto.AuthorDto;
 import jakarta.validation.Valid;
