@@ -11,7 +11,7 @@ A RESTful API for library management with JWT security, built with Spring Boot a
 
 ## Security
 This API uses **JWT** for authentication.
-1. **Login:** Use `/api/v1/auth/authenticate` to get a token.
+1. **Login:** Use `login/save` to get a token.
 2. **Usage:** Include the token in the request header:  
    `Authorization: Bearer <your_token>`
 
@@ -21,8 +21,8 @@ This API uses **JWT** for authentication.
 
 | Method | Endpoint | Description | Access |
 | :--- | :--- | :--- | :--- |
-| POST | `/api/v1/auth/register` | Create user | Public |
-| POST | `/api/v1/auth/authenticate` | Get token | Public |
+| POST | `/login/save` | Create user | Public |
+| POST | `/login/auth` | Get token | Public |
 | GET | `/book/list` | List books | Public |
 | GET | `/book/search` | Search books | Public |
 | GET | `/book/best` | Top books | Public |
