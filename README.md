@@ -1,35 +1,45 @@
 # Library API
 
-REST API for library management — CRUD operations for authors and books.
+A RESTful API for library management with JWT security, built with Spring Boot and PostgreSQL.
 
 ## Tech Stack
+* Java 21 & Spring Boot 3.4
+* Spring Security (JWT)
+* PostgreSQL & Docker
 
-Java 21 · Spring Boot 3.4 · JPA · PostgreSQL · Docker · Lombok
+---
 
-## Setup
+## Security
+This API uses **JWT** for authentication.
+1. **Login:** Use `login/save` to get a token.
+2. **Usage:** Include the token in the request header:  
+   `Authorization: Bearer <your_token>`
 
-```bash
-docker-compose up -d
-./mvnw spring-boot:run
-```
-
-Runs at `http://localhost:8080`
+---
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/author/save` | Add author |
-| GET | `/author/list` | List authors |
-| GET | `/author/detail?firstname=&lastname=` | Author detail with books |
-| DELETE | `/author/delete` | Delete author |
-| POST | `/book/addbook` | Add book |
-| GET | `/book/list` | List books |
-| GET | `/book/search?name=` | Search by name |
-| GET | `/book/best` | Top-rated books |
-| PUT | `/book/update?name=` | Update book |
-| DELETE | `/book/delete?name=` | Delete book |
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| POST | `/login/save` | Create user | Public |
+| POST | `/login/auth` | Get token | Public |
+| GET | `/book/list` | List books | Public |
+| GET | `/book/search` | Search books | Public |
+| GET | `/book/best` | Top books | Public |
+| GET | `/author/list` | List authors | Authenticated |
+| GET | `/author/detail` | Author details | Authenticated |
+| POST | `/author/save` | Add author | Authenticated |
+| DELETE | `/author/delete` | Delete author | Authenticated |
+| POST | `/book/addbook` | Add book | Authenticated |
+| PUT | `/book/update` | Update book | Authenticated |
+| DELETE | `/book/delete` | Delete book | Authenticated |
 
-## DB
+---
 
-`localhost:5433` · library_db · admin / admin123
+## Setup & Database
+1. **Run DB:** `docker-compose up -d`
+2. **Run App:** `./mvnw spring-boot:run`
+
+**Database Info:**
+* Host: `localhost:5433` | DB: `library_db`
+* User/Pass: `admin` / `admin123`
