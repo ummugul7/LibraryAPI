@@ -1,6 +1,7 @@
 package com.ummugul.libraryapi.dto;
 
 import jakarta.validation.constraints.Positive;
+import lombok.Builder;
 import lombok.Data;
 
 @Data

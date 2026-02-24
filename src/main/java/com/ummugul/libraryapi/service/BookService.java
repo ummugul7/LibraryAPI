@@ -2,6 +2,8 @@ package com.ummugul.libraryapi.service;
 
 import com.ummugul.libraryapi.dto.AuthorDto;
 import com.ummugul.libraryapi.dto.BookRequestDTO;
+import com.ummugul.libraryapi.dto.BookUpdateDto;
+import com.ummugul.libraryapi.exception.AuthorNotFoundException;
 import com.ummugul.libraryapi.model.Author;
 import com.ummugul.libraryapi.model.Book;
 import com.ummugul.libraryapi.repository.IAuthorRepository;
@@ -12,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,22 +28,35 @@ public class BookService {
 
 
     public String AddBook(BookRequestDTO dto) {
-        Author author = IAuthorRepository
-                .findByFirstnameIgnoreCaseAndLastnameIgnoreCase(dto.getFirstname(), dto.getLastname())
-                .orElseGet(() -> {
-                    Author newAuthor = new Author();
-                    newAuthor.setFirstname(dto.getFirstname());
-                    newAuthor.setLastname(dto.getLastname());
-                    return IAuthorRepository.save(newAuthor);
-                });
+        Optional<Author> existingAuthor = IAuthorRepository
+                .findByFirstnameIgnoreCaseAndLastnameIgnoreCase(dto.getFirstname(), dto.getLastname());
 
-        // kitap kaydı var mı diye bakıyoruz
-        if (IBookRepository.findByNameIgnoreCase(dto.getName()).isPresent())
-            return "Book already exists";
+        if (existingAuthor.isPresent()) {
+            boolean bookExists = IBookRepository
+                    .findByNameIgnoreCaseAndAuthor(dto.getName(), existingAuthor.get())
+                    .isPresent();
 
-        Book book = new Book();
-        BeanUtils.copyProperties(dto, book, "firstname", "lastname");
-        book.setAuthor(author);
+            if (bookExists) {
+                return "This book  already exists";
+            }
+        }
+
+        Author author = existingAuthor.orElseGet(() -> {
+            Author newAuthor = Author.builder()
+                    .firstname(dto.getFirstname())
+                    .lastname(dto.getLastname())
+                    .build();
+            return IAuthorRepository.save(newAuthor);
+        });
+
+        Book book = Book.builder()
+                .name(dto.getName())
+                .page(dto.getPage())
+                .price(dto.getPrice())
+                .score(dto.getScore())
+                .author(author)
+                .build();
+
         IBookRepository.save(book);
         return "Registration done";
     }
@@ -49,7 +65,6 @@ public class BookService {
     public BookResponseDto GetBook(String name) {
         Book existingBook = IBookRepository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new BookNotFoundException("book not found: " + name));
-
         BookResponseDto dto = new BookResponseDto();
         BeanUtils.copyProperties(existingBook, dto, "author");
         AuthorDto authorDto = new AuthorDto();
@@ -69,14 +84,23 @@ public class BookService {
 
     }
 
-    // methodu kontol et
-    public Book UpdateBook(String name, @Valid Book book) {
-        Book existingBook = IBookRepository.findByNameIgnoreCase(name)
+    public BookResponseDto UpdateBook(String name, String firstname, String lastname , BookUpdateDto book) {
+
+        Author existigAuthor = IAuthorRepository.findByFirstnameIgnoreCaseAndLastnameIgnoreCase(firstname,lastname)
+                .orElseThrow(()->new AuthorNotFoundException("Author not found:" +firstname +" " + lastname));
+        Book existingBook = IBookRepository.findByNameIgnoreCaseAndAuthor_Id(name,existigAuthor.getId())
                 .orElseThrow(() -> new BookNotFoundException("book not found: " + name));
 
-        BeanUtils.copyProperties(book, existingBook, "id"); // id hariç kopyala
-        IBookRepository.save(existingBook);
-        return book;
+            existingBook.setPage(book.getPage());
+            existingBook.setScore(book.getScore());
+            existingBook.setPrice(book.getPrice());
+            IBookRepository.save(existingBook);
+            BookResponseDto dto = new BookResponseDto();
+            BeanUtils.copyProperties(existingBook, dto, "author");
+            AuthorDto authorDto = new AuthorDto();
+            BeanUtils.copyProperties(existingBook.getAuthor(), authorDto);
+            dto.setAuthor(authorDto);
+            return dto;
     }
 
     public List<BookResponseDto> ListBook() {

@@ -3,7 +3,7 @@ package com.ummugul.libraryapi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//pgadmin için host adresi http://localhost:15432
+//pgadmin http://localhost:15432
 @SpringBootApplication(scanBasePackages = "com.ummugul.libraryapi")
 public class LibraryApiApplication {
 

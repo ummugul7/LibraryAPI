@@ -11,8 +11,7 @@ services:
       POSTGRES_PASSWORD: 'admin123'
       POSTGRES_DB: 'library_db'
     volumes:
-      - postgres:/var/lib/postgresql # psotgrede containerinde bulunan verileri benim postgres dosyama ekleyeck
-      # mevcut sürümde +18 de yani data yok bunu ekleme yoksa hata alıyorsun
+      - postgres:/var/lib/postgresql
     networks:
       - lib-network
 

@@ -1,6 +1,7 @@
 package com.ummugul.libraryapi.controller;
 
 import com.ummugul.libraryapi.dto.BookRequestDTO;
+import com.ummugul.libraryapi.dto.BookUpdateDto;
 import com.ummugul.libraryapi.model.Book;
 import com.ummugul.libraryapi.service.BookService;
 import com.ummugul.libraryapi.dto.BookResponseDto;
@@ -28,8 +29,8 @@ public class BookController {
     public  String DeleteBook (@RequestParam String name) {return bookService.DeleteBook(name);}
 
     @PutMapping("/update")
-    public  Book UpdateBook (@RequestParam String name ,@Valid @RequestBody Book book ){
-        return  bookService.UpdateBook(name , book );
+    public  BookResponseDto UpdateBook (@RequestParam String bookname , @RequestParam String firstname,@RequestParam String lastname,@Valid @RequestBody BookUpdateDto book ){
+        return  bookService.UpdateBook(bookname ,firstname,lastname , book );
     }
 
     @GetMapping("/list")
