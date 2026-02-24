@@ -1,35 +1,71 @@
-# Library API
+# 📚 Library API
 
-REST API for library management — CRUD operations for authors and books.
+A RESTful API for library management with robust security features, built using Spring Boot 3.4 and JWT.
 
-## Tech Stack
+## 🚀 Tech Stack
 
-Java 21 · Spring Boot 3.4 · JPA · PostgreSQL · Docker · Lombok
+* **Java 21** & **Spring Boot 3.4**
+* **Spring Security & JWT** (Stateless Authentication)
+* **Spring Data JPA** & **PostgreSQL**
+* **Lombok** (For cleaner code)
+* **Docker** (Database containerization)
 
-## Setup
+---
 
-```bash
-docker-compose up -d
-./mvnw spring-boot:run
-```
+## 🔐 Security Mechanism (JWT)
 
-Runs at `http://localhost:8080`
+This project implements **JWT (JSON Web Token)** for stateless authentication.
 
-## API Endpoints
+1.  **Registration/Login:** Use the `/api/v1/auth` endpoints to create a user and receive a JWT token.
+2.  **Authorization:** For endpoints marked as **Authenticated**, you must include your token in the HTTP Header as follows:
+    `Authorization: Bearer <your_jwt_token>`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/author/save` | Add author |
-| GET | `/author/list` | List authors |
-| GET | `/author/detail?firstname=&lastname=` | Author detail with books |
-| DELETE | `/author/delete` | Delete author |
-| POST | `/book/addbook` | Add book |
-| GET | `/book/list` | List books |
-| GET | `/book/search?name=` | Search by name |
-| GET | `/book/best` | Top-rated books |
-| PUT | `/book/update?name=` | Update book |
-| DELETE | `/book/delete?name=` | Delete book |
 
-## DB
 
-`localhost:5433` · library_db · admin / admin123
+---
+
+## 📡 API Endpoints
+
+### 🔑 Authentication (Auth)
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| POST | `/api/v1/auth/register` | Create a new user account | Public |
+| POST | `/api/v1/auth/authenticate` | Login and receive JWT Token | Public |
+
+### ✍️ Author Operations
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| GET | `/author/list` | List all authors | Public |
+| GET | `/author/detail` | Get author details and books | **Authenticated** |
+| POST | `/author/save` | Add a new author | **Authenticated** |
+| DELETE | `/author/delete` | Delete an author | **Authenticated (Admin)** |
+
+### 📖 Book Operations
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| GET | `/book/list` | List all books | Public |
+| GET | `/book/search?name=` | Search books by name | Public |
+| GET | `/book/best` | List top-rated books | Public |
+| POST | `/book/addbook` | Add a new book | **Authenticated** |
+| PUT | `/book/update` | Update book details | **Authenticated** |
+| DELETE | `/book/delete` | Remove a book from system | **Authenticated** |
+
+---
+
+## 🛠️ Setup & Installation
+
+1.  **Start Database (Docker):**
+    ```bash
+    docker-compose up -d
+    ```
+2.  **Run the Application:**
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+
+### 🗄️ Database Configuration
+* **Host:** `localhost:5433`
+* **DB Name:** `library_db`
+* **Credentials:** `admin` / `admin123`
+
+---s
