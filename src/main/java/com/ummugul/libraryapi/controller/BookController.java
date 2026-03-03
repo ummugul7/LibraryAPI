@@ -23,10 +23,10 @@ public class BookController {
 
     // http://localhost:8080/book/search?name=Budala
     @GetMapping ("/search")
-    public BookResponseDto GetBook (@RequestParam String name){return bookService.GetBook(name);}
+    public BookResponseDto GetBook (@RequestParam String name,@RequestParam String firstname,@RequestParam String lastname){return bookService.GetBook(name,firstname,lastname);}
 
     @DeleteMapping("/delete")
-    public  String DeleteBook (@RequestParam String name) {return bookService.DeleteBook(name);}
+    public  String DeleteBook (@RequestParam String name,@RequestParam String firstname,@RequestParam String lastname) {return bookService.DeleteBook(name,firstname,lastname);}
 
     @PutMapping("/update")
     public  BookResponseDto UpdateBook (@RequestParam String bookname , @RequestParam String firstname,@RequestParam String lastname,@Valid @RequestBody BookUpdateDto book ){

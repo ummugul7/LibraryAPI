@@ -67,9 +67,6 @@ public class AuthorService {
                 .findByFirstnameIgnoreCaseAndLastnameIgnoreCase(dto.getFirstname(), dto.getLastname())
                 .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
 
-        //int id = author.getId();
-       // List<Book> bookList = IBookRepository.findAll();
-       //   bookList.stream().filter(book -> id ==book.getAuthor().getId()).forEach(IBookRepository::delete);
         IAuthorRepository.delete(author);
 
         return  "deleted ";

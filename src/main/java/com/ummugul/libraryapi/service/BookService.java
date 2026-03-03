@@ -62,8 +62,10 @@ public class BookService {
     }
 
 
-    public BookResponseDto GetBook(String name) {
-        Book existingBook = IBookRepository.findByNameIgnoreCase(name)
+    public BookResponseDto GetBook(String name,String firstname, String lastname) {
+        Author existigAuthor = IAuthorRepository.findByFirstnameIgnoreCaseAndLastnameIgnoreCase(firstname,lastname)
+                .orElseThrow(()->new AuthorNotFoundException("Author not found:" +firstname +" " + lastname));
+        Book existingBook = IBookRepository.findByNameIgnoreCaseAndAuthor_Id(name,existigAuthor.getId())
                 .orElseThrow(() -> new BookNotFoundException("book not found: " + name));
         BookResponseDto dto = new BookResponseDto();
         BeanUtils.copyProperties(existingBook, dto, "author");
@@ -75,10 +77,13 @@ public class BookService {
     }
 
 
-    public String DeleteBook(String name) {
-        Optional<Book> existingBook = IBookRepository.findByNameIgnoreCase(name);
-        if (existingBook.isPresent()) {
-            IBookRepository.deleteById(existingBook.get().getId());
+    public String DeleteBook(String name,String firstname, String lastname) {
+        Author existigAuthor = IAuthorRepository.findByFirstnameIgnoreCaseAndLastnameIgnoreCase(firstname,lastname)
+                .orElseThrow(()->new AuthorNotFoundException("Author not found:" +firstname +" " + lastname));
+        Book existingBook = IBookRepository.findByNameIgnoreCaseAndAuthor_Id(name,existigAuthor.getId())
+                .orElseThrow(() -> new BookNotFoundException("book not found: " + name));
+        if (existingBook !=null) {
+            IBookRepository.deleteById(existingBook.getId());
             return "book deleted";
         } else return "book not found ";
 
