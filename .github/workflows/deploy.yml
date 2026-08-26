@@ -1,0 +1,36 @@
+name: Deploy and Verify Containers
+
+on:
+  push:
+    branches: [ "main" ] # veya kullandığınız ana branch adı (örn: master)
+  workflow_dispatch:      # Manuel tetikleme imkanı sağlar
+
+jobs:
+  deploy:
+    # AWS'de kurduğunuz self-hosted runner etiketi
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Stop Old Containers (Clean Up)
+        run: |
+          docker compose down --remove-orphans || true
+
+      - name: Pull and Run Containers
+        run: |
+          docker compose up -d
+
+      - name: Verify Running Containers
+        run: |
+          echo "=== Aktif Container Listesi ==="
+          docker ps
+
+          echo "=== Compose Servis Durumları ==="
+          docker compose ps
+
+      - name: Check Database Logs
+        run: |
+          sleep 5
+          docker logs database --tail 20
