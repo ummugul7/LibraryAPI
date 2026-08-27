@@ -6,9 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # ==========================================
-  # 1. AŞAMA: İmajları Amazon ECR'a Push Etme
-  # ==========================================
   sync-to-ecr:
     runs-on: ubuntu-latest
     steps:
@@ -28,20 +25,17 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker pull postgres:latest
-          docker tag postgres:latest $ECR_REGISTRY/postgres:latest
-          docker push $ECR_REGISTRY/postgres:latest
+          docker tag postgres:latest $ECR_REGISTRY/postgres-repo:latest
+          docker push $ECR_REGISTRY/postgres-repo:latest
 
       - name: Pull, Tag and Push pgAdmin Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           docker pull dpage/pgadmin4:latest
-          docker tag dpage/pgadmin4:latest $ECR_REGISTRY/pgadmin4:latest
-          docker push $ECR_REGISTRY/pgadmin4:latest
+          docker tag dpage/pgadmin4:latest $ECR_REGISTRY/pgadmin4-repo:latest
+          docker push $ECR_REGISTRY/pgadmin4-repo:latest
 
-  # ==========================================
-  # 2. AŞAMA: EC2 Self-Hosted Runner Üzerinde Deploy
-  # ==========================================
   deploy-to-ec2:
     needs: sync-to-ecr
     runs-on: self-hosted
@@ -65,16 +59,12 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          # ECR'dan yeni imajları çek
           docker compose pull
-
-          # Eski container'ları kaldır ve yenilerini arka planda başlat
           docker compose down --remove-orphans || true
           docker compose up -d
 
       - name: Clean up unused Docker images
         run: |
-          # Diskin dolmaması için eski/kullanılmayan imajları temizle
           docker image prune -f
 
       - name: Verify Running Containers
