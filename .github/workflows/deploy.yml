@@ -1,36 +1,85 @@
-name: Deploy and Verify Containers
+name: CI/CD - Sync to Amazon ECR and Deploy to EC2
 
 on:
   push:
-    branches: [ "main" ] # veya kullandığınız ana branch adı (örn: master)
-  workflow_dispatch:      # Manuel tetikleme imkanı sağlar
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  deploy:
-    # AWS'de kurduğunuz self-hosted runner etiketi
+  # ==========================================
+  # 1. AŞAMA: İmajları Amazon ECR'a Push Etme
+  # ==========================================
+  sync-to-ecr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull, Tag and Push Postgres Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker pull postgres:latest
+          docker tag postgres:latest $ECR_REGISTRY/postgres:latest
+          docker push $ECR_REGISTRY/postgres:latest
+
+      - name: Pull, Tag and Push pgAdmin Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker pull dpage/pgadmin4:latest
+          docker tag dpage/pgadmin4:latest $ECR_REGISTRY/pgadmin4:latest
+          docker push $ECR_REGISTRY/pgadmin4:latest
+
+  # ==========================================
+  # 2. AŞAMA: EC2 Self-Hosted Runner Üzerinde Deploy
+  # ==========================================
+  deploy-to-ec2:
+    needs: sync-to-ecr
     runs-on: self-hosted
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Stop Old Containers (Clean Up)
-        run: |
-          docker compose down --remove-orphans || true
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Pull and Run Containers
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Pull Images and Deploy Containers
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
+          # ECR'dan yeni imajları çek
+          docker compose pull
+
+          # Eski container'ları kaldır ve yenilerini arka planda başlat
+          docker compose down --remove-orphans || true
           docker compose up -d
+
+      - name: Clean up unused Docker images
+        run: |
+          # Diskin dolmaması için eski/kullanılmayan imajları temizle
+          docker image prune -f
 
       - name: Verify Running Containers
         run: |
-          echo "=== Aktif Container Listesi ==="
+          echo "=== Aktif Container'lar ==="
           docker ps
-
-          echo "=== Compose Servis Durumları ==="
+          echo "=== Compose Servis Durumu ==="
           docker compose ps
-
-      - name: Check Database Logs
-        run: |
-          sleep 5
-          docker logs database --tail 20

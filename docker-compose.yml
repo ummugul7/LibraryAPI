@@ -1,8 +1,7 @@
 version: '3.8'
-
 services:
   database:
-    image: postgres:latest
+    image: ${ECR_REGISTRY}/postgres:latest
     container_name: database
     ports:
       - "5433:5432"  # port çalışması olduğu için portlrı değiştiridm
@@ -16,7 +15,7 @@ services:
       - lib-network
 
   pgadmin:
-    image: dpage/pgadmin4:latest
+    image: ${ECR_REGISTRY}/pgadmin4:latest
     container_name: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'  #pg admin araryüzüne girerekn kullanılacak
